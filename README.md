@@ -1,4 +1,5 @@
 # TS-Game
+Game made in TS with custom made game engine that's being developed at the same as the game and will be relased as separate game engine in future.
 
 ## Dev Setup:
 
