@@ -21,7 +21,7 @@ window.onload = () => {
 }
 
 // Game
-let player:RenderObjectRect = eng.object.createRect("player",0,0,50,50,"white")
+let player = eng.object.createRect("player",0,0,50,50,"white")
 
 const player_speed = 5
 
