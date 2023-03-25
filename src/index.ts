@@ -25,10 +25,9 @@ let player:RenderObjectRect = eng.object.createRect("player",0,0,50,50,"white")
 
 const player_speed = 5
 
-eng.world.createRect("floor1",0,450,300,100,"green")
-eng.world.createRect("floor2",200,350,250,50,"green")
-eng.world.createRect("floor3",400,450,250,50,"green")
-eng.world.createRect("floor4",600,350,250,200,"green")
+let enemy:RenderObjectRect = {x: 0, y: 450,w: 280,h:100,color: "green"}
+let enemy2:RenderObjectRect = {x: 360, y: 450,w: 250,h:50,color: "green"}
+
 
 const ready = (canvas: EngineRender) => {
     console.log("ready");
@@ -54,6 +53,7 @@ const update = (render:EngineRender,input:EngineInput) => {
 
     input.keys.forEach(key => {
         if (key === "ArrowUp" && onground) {onground = false ;pvel.y = -20}
+        // if (key === "ArrowDown") pvel.y = player_speed
         if (key === "ArrowLeft") pvel.x = -player_speed
         if (key === "ArrowRight") pvel.x = player_speed
     });
