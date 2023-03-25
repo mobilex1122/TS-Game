@@ -16,11 +16,11 @@ Game made in TS with custom made game engine that's being developed at the same 
 1. Go to [releases](https://github.com/mobilex1122/TS-Game/releases) and download `Game.zip`
 2. Extract `Game.zip` in new folder
 3. Run any html server inside that folder. Recomended (and easy) html servers:
-   1. VS Code Live server:
+   - VS Code Live server:
       1. Open extracted folder in VS Code
       2. Install [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
       3. Run Live Server (Go Love button in bottom right panel)
-   2. Python http server
+   - Python http server
       1. Install [python](https://www.python.org/downloads/)
       2. Open extracted folder in terminal (Or navigate to it)
       3. Run `python -m http.server`
