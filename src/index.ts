@@ -29,6 +29,8 @@ eng.world.createRect("f1",0,450,200,100,"green")
 eng.world.createRect("f2",200,350,280,50,"green")
 eng.world.createRect("f3",400,450,400,100,"green")
 eng.world.createRect("f4",800,350,280,50,"green")
+eng.world.createRect("mainf",-200,700,1500,50,"red")
+eng.world.createRect("f5",-200,600,100,25,"blue")
 
 
 
@@ -71,6 +73,7 @@ const update = (render:EngineRender,input:EngineInput) => {
         let sensitivity = 0
         if (cl.side =="up" && pvel.y <= 0) {
             player.y += cl.depth
+            pvel.y = 0
         }
         if (cl.side =="down" && pvel.y >= 0) {
             onground = true
@@ -99,6 +102,16 @@ const update = (render:EngineRender,input:EngineInput) => {
     if (player.x +player.w > 450) {
         player.x  = 450-player.w
         eng.world.moveWorld(-pvel.x,0)
+    }
+
+    if (player.y < 50) {
+        player.y = 50
+        eng.world.moveWorld(0,-pvel.y)
+    } 
+
+    if (player.y + player.h > 450) {
+        player.y  = 450-player.h
+        eng.world.moveWorld(0,-pvel.y)
     } 
     
 
