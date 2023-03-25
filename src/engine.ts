@@ -8,7 +8,7 @@ export interface RenderObjectRect{
     y: number,
     w: number,
     h: number,
-    color: string | CanvasGradient | CanvasPattern,
+    color: string | CanvasGradient | CanvasPattern
 }
 
 
@@ -30,9 +30,12 @@ export interface EngineConfig {
     }
 }
 
+
 export default class Engine {
     private canvas!: CanvasRenderingContext2D
     private config!: EngineConfig;
+    private objects: { [index: string]: RenderObjectRect;} = {}
+    private worlddata: {x:number,y:number,objects:{[index: string]: RenderObjectRect;}} = {x:0,y:0,objects:{}}
 
     init = (canvas: CanvasRenderingContext2D, config: EngineConfig) => {
         this.canvas = canvas
@@ -51,7 +54,7 @@ export default class Engine {
             canvas: {
                 width: this.canvas.canvas.width,
                 height: this.canvas.canvas.height
-            }
+            },
         }
 
         
@@ -71,11 +74,57 @@ export default class Engine {
     }
 
 
+
+    object = {
+        list: this.objects,
+        createRect: (name:string,x:number,y:number,w:number,h:number,color: string | CanvasGradient | CanvasPattern) => {
+            this.objects[name] = {x,y,w,h,color}
+            return this.objects[name]
+        },
+        removeRect: (name:string) => {
+            delete this.objects[name]
+        },
+        getObject: (name:string) => {
+            return this.objects[name]
+        }
+    }
+
+    world = {
+        list: this.worlddata.objects,
+        createRect: (name:string,x:number,y:number,w:number,h:number,color: string | CanvasGradient | CanvasPattern) => {
+            this.worlddata.objects[name] = {x,y,w,h,color}
+            return this.worlddata.objects[name]
+        },
+        removeRect: (name:string) => {
+            delete this.worlddata.objects[name]
+        },
+        getObject: (name:string) => {
+            return this.worlddata.objects[name]
+        },
+
+        moveWorld: (x:number,y:number)=>{
+            Object.keys(this.worlddata.objects).forEach((key) => {
+                let obj = this.worlddata.objects[key]
+                obj.x += x
+                obj.y += y
+            })
+        }
+    }
+
+
     collisions = collisionhandler
+
+
+
 }
 
+ 
 
-const clamp = (num:number, min:number, max:number) => Math.min(Math.max(num, min), max);
+
+
+
+
+
 
 const collisionhandler = {
     simplerect: (object1:RenderObjectRect,object2:RenderObjectRect):boolean => {

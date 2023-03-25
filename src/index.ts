@@ -21,13 +21,14 @@ window.onload = () => {
 }
 
 // Game
-let player:RenderObjectRect = {x: 0, y: 0,w: 50,h:50,color: "white"}
+let player:RenderObjectRect = eng.object.createRect("player",0,0,50,50,"white")
 
 const player_speed = 5
 
-let enemy:RenderObjectRect = {x: 0, y: 450,w: 300,h:100,color: "green"}
-let enemy2:RenderObjectRect = {x: 200, y: 350,w: 250,h:50,color: "green"}
-
+eng.world.createRect("floor1",0,450,300,100,"green")
+eng.world.createRect("floor2",200,350,250,50,"green")
+eng.world.createRect("floor3",400,450,250,50,"green")
+eng.world.createRect("floor4",600,350,250,200,"green")
 
 const ready = (canvas: EngineRender) => {
     console.log("ready");
@@ -36,7 +37,7 @@ const ready = (canvas: EngineRender) => {
 
 let blackframe = 0
 
-let grav = 0.5
+let grav = 1
 var pvel = {x:0,y:0}
 let onground = false
 const update = (render:EngineRender,input:EngineInput) => {
@@ -45,18 +46,14 @@ const update = (render:EngineRender,input:EngineInput) => {
 
     
 
-    let coll = [
-        enemy,
-        enemy2,
-    ]
-    
+
     
     pvel.x = 0
     
+    if (pvel.y > 1) onground = false
 
     input.keys.forEach(key => {
         if (key === "ArrowUp" && onground) {onground = false ;pvel.y = -20}
-        if (key === "ArrowDown") pvel.y = player_speed
         if (key === "ArrowLeft") pvel.x = -player_speed
         if (key === "ArrowRight") pvel.x = player_speed
     });
@@ -64,8 +61,9 @@ const update = (render:EngineRender,input:EngineInput) => {
     player.x += pvel.x
     player.y += pvel.y
     
-    coll.forEach((obj) => {
-        
+    pvel.y += grav
+    Object.keys(eng.world.list).forEach((key) => {
+        let obj = eng.world.getObject(key)
         let cl = eng.collisions.advancedrect(player,obj)
         let sensitivity = 0
         if (cl.side =="up" && pvel.y <= 0) {
@@ -78,7 +76,7 @@ const update = (render:EngineRender,input:EngineInput) => {
             
             
         } else {
-            pvel.y += grav
+            
         }
         if (cl.side == "left" && pvel.x <= 0) {
             player.x += cl.depth
@@ -90,6 +88,16 @@ const update = (render:EngineRender,input:EngineInput) => {
     }
     )
 
+    if (player.x < 50) {
+        player.x = 50
+        eng.world.moveWorld(-pvel.x,0)
+    } 
+
+    if (player.x +player.w > 450) {
+        player.x  = 450-player.w
+        eng.world.moveWorld(-pvel.x,0)
+    } 
+    
 
     if (pvel.y > 15) {
         pvel.y = 15
@@ -102,8 +110,10 @@ const update = (render:EngineRender,input:EngineInput) => {
     render.fillRect(0,0,render.canvas.width, render.canvas.height,"black")
 
     render.objectRect(player)
-    render.objectRect(enemy)
-    render.objectRect(enemy2)
+
+    Object.keys(eng.world.list).forEach((key) => {
+        render.objectRect(eng.world.getObject(key))
+    })
 }
 
 
