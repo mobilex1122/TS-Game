@@ -25,8 +25,11 @@ let player:RenderObjectRect = eng.object.createRect("player",0,0,50,50,"white")
 
 const player_speed = 5
 
-let enemy:RenderObjectRect = {x: 0, y: 450,w: 280,h:100,color: "green"}
-let enemy2:RenderObjectRect = {x: 360, y: 450,w: 250,h:50,color: "green"}
+eng.world.createRect("f1",0,450,200,100,"green")
+eng.world.createRect("f2",200,350,280,50,"green")
+eng.world.createRect("f3",400,450,400,100,"green")
+eng.world.createRect("f4",800,350,280,50,"green")
+
 
 
 const ready = (canvas: EngineRender) => {
