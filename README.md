@@ -28,7 +28,7 @@ Game made in TS with custom made game engine that's being developed at the same 
 
 ## Manual Build or Setup for development
 
-1. Install typescript compiler (`tsc`) and run it inside this folder (`/.../TS-Game/`)
+1. Install typescript compiler (`tsc`) and run it inside project folder (`/.../TS-Game/`)
 2. Run live server (or any other http-server, refer to Relased versions option 2) inside `./public` directory
 
 ## TODO
