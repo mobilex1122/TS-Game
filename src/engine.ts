@@ -78,8 +78,12 @@ export default class Engine {
     object = {
         list: this.objects,
         createRect: (name:string,x:number,y:number,w:number,h:number,color: string | CanvasGradient | CanvasPattern) => {
-            this.objects[name] = {x,y,w,h,color}
-            return this.objects[name]
+            if (this.objects[name]) {
+                console.error("Name '" + name + "' already exists")
+            } else {
+                this.objects[name] = {x,y,w,h,color}
+                return this.objects[name]
+            }
         },
         removeRect: (name:string) => {
             delete this.objects[name]
@@ -92,8 +96,13 @@ export default class Engine {
     world = {
         list: this.worlddata.objects,
         createRect: (name:string,x:number,y:number,w:number,h:number,color: string | CanvasGradient | CanvasPattern) => {
-            this.worlddata.objects[name] = {x,y,w,h,color}
-            return this.worlddata.objects[name]
+            if (this.worlddata.objects[name]) {
+                console.error("Name '" + name + "' already exists")
+            } else {
+                this.worlddata.objects[name] = {x,y,w,h,color}
+                return this.worlddata.objects[name] 
+            }
+            
         },
         removeRect: (name:string) => {
             delete this.worlddata.objects[name]
