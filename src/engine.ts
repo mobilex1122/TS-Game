@@ -83,13 +83,17 @@ export default class Engine {
     /*
     tiled = {
         loadfullTilemap: (position :{x:number,y:number},tilemapimage:HTMLImageElement,tilemapdata: any,tilesize: number) => {
+            // loads chunks
             tilemapdata["layers"][0].chunks.forEach((chunk)=> {
+                // goes through all tiles in that chunk
                 for (let y = 0; y < chunk.height;y++) {
                     for (let x = 0; x < chunk.height;x++) {
+                        // some calculations that i tried to do (does not work)
                         let tile = chunk.data[x*(y*16)]
                         tilemapimage.width/tilesize
                         tilemapimage.height/tilesize
 
+                        // render (gets called for every tile. aka: RAM killer)
                         this.canvas.drawImage(
                             tilemapimage,
                             wrapInRange(tile,tilemapimage.width/tilesize),
