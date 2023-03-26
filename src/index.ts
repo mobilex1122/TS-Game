@@ -1,4 +1,4 @@
-import Engine, { EngineConfig, EngineInput, EngineRender, RenderObjectRect } from "./engine.js"
+import Engine, { EngineConfig, EngineInput, EngineRender, RenderObject } from "./engine.js"
 
 const gameConfig:EngineConfig = {
     functions: {
@@ -7,21 +7,28 @@ const gameConfig:EngineConfig = {
     }
 }
 
+//let map_01 = {}
+
+
 const eng = new Engine()
-window.onload = () => {
+window.onload = async () => {
+    // Experimantal way to import tilemaps (Does not work)
+    //map_01 = await (await fetch("./assets/maps/map_01.json")).json()
+    
     const canvasElement: HTMLCanvasElement = (document.getElementById("game") as HTMLCanvasElement);
     const ctx = canvasElement.getContext("2d");
-    
+        
     if (ctx != null) {
-       eng.init(ctx, gameConfig) 
+        eng.init(ctx, gameConfig) 
     } else {
         alert("No canvas")
-    }
+    } 
+    
     
 }
 
 // Game
-let player = eng.object.createRect("player",0,0,50,50,"white")
+let player = (eng.object.createRect("player",0,0,50,50,"white") as RenderObject)
 
 const player_speed = 5
 
@@ -44,6 +51,7 @@ let blackframe = 0
 let grav = 1
 var pvel = {x:0,y:0}
 let onground = false
+let tiledpos = {x:0,y:0}
 const update = (render:EngineRender,input:EngineInput) => {
     
     
@@ -124,12 +132,19 @@ const update = (render:EngineRender,input:EngineInput) => {
 
 
     render.fillRect(0,0,render.canvas.width, render.canvas.height,"black")
-
+    //tilemap size 22
     render.objectRect(player)
-
+    let tiles = new Image()
+    tiles.src = "./assets/tiles.png"
+    render.tile(0,0,0,0,16,tiles)
     Object.keys(eng.world.list).forEach((key) => {
-        render.objectRect(eng.world.getObject(key))
+        let obj = eng.world.getObject(key)
+        if (obj.type == "rect"){
+            render.objectRect(obj)
+        }
     })
+    // DO NOT UNCOMMENT! RAM killer (commented in engine.js:81)
+    // eng.tiled.loadfullTilemap(tiledpos,tiles,map_01,16)
 }
 
 

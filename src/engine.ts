@@ -3,7 +3,8 @@
     
 // }
 
-export interface RenderObjectRect{
+export interface RenderObject{
+    type: string,
     x: number,
     y: number,
     w: number,
@@ -14,7 +15,8 @@ export interface RenderObjectRect{
 
 export interface EngineRender {
     fillRect: (x: number,y: number,w: number,h: number, color:string | CanvasGradient | CanvasPattern) => void,
-    objectRect: (object:RenderObjectRect) => void,
+    tile: (x: number,y: number,tileX: number,tileY: number, size:number,tileimage: HTMLImageElement) => void,
+    objectRect: (object:RenderObject) => void,
     canvas: {width: number, height: number}
 }
 
@@ -34,12 +36,13 @@ export interface EngineConfig {
 export default class Engine {
     private canvas!: CanvasRenderingContext2D
     private config!: EngineConfig;
-    private objects: { [index: string]: RenderObjectRect;} = {}
-    private worlddata: {x:number,y:number,objects:{[index: string]: RenderObjectRect;}} = {x:0,y:0,objects:{}}
+    private objects: { [index: string]: RenderObject;} = {}
+    private worlddata: {x:number,y:number,objects:{[index: string]: RenderObject;}} = {x:0,y:0,objects:{}}
 
     init = (canvas: CanvasRenderingContext2D, config: EngineConfig) => {
         this.canvas = canvas
         this.config = config
+        this.canvas.imageSmoothingEnabled = false
 
 
         const render:EngineRender = {
@@ -47,7 +50,10 @@ export default class Engine {
                 this.canvas.fillStyle = color
                 this.canvas.fillRect(x,y,w,h)
             },
-            objectRect: (object:RenderObjectRect) => {
+            tile: (x: number,y: number,tileX: number,tileY: number, size:number,tileimage: HTMLImageElement) => {
+                this.canvas.drawImage(tileimage,tileX,tileY,size,size,x*(size*2),y*(size*2),size*2,size*2)
+            },
+            objectRect: (object:RenderObject) => {
                 this.canvas.fillStyle = object.color
                 this.canvas.fillRect(object.x,object.y,object.w,object.h)
             },
@@ -72,7 +78,37 @@ export default class Engine {
         window.setInterval(() => { this.config.functions.update(render,input) },13)
         
     }
+    // Experimental (RAM killer)
+    // Mobilex: Please help me with this. I don't know how to do it.
+    /*
+    tiled = {
+        loadfullTilemap: (position :{x:number,y:number},tilemapimage:HTMLImageElement,tilemapdata: any,tilesize: number) => {
+            tilemapdata["layers"][0].chunks.forEach((chunk)=> {
+                for (let y = 0; y < chunk.height;y++) {
+                    for (let x = 0; x < chunk.height;x++) {
+                        let tile = chunk.data[x*(y*16)]
+                        tilemapimage.width/tilesize
+                        tilemapimage.height/tilesize
 
+                        this.canvas.drawImage(
+                            tilemapimage,
+                            wrapInRange(tile,tilemapimage.width/tilesize),
+                            Math.floor(tile/(tilemapimage.width/tilesize)),
+                            tilesize,
+                            tilesize,
+                            x*(tilesize*2)
+                            ,y*(tilesize*2)
+                            ,tilesize*2,
+                            tilesize*2)
+                        console.log(tile)
+                    }
+                }
+
+            })
+            
+        }  
+    }
+    */
 
 
     object = {
@@ -81,7 +117,7 @@ export default class Engine {
             if (this.objects[name]) {
                 console.error("Name '" + name + "' already exists")
             } else {
-                this.objects[name] = {x,y,w,h,color}
+                this.objects[name] = {type:"rect",x,y,w,h,color}
                 return this.objects[name]
             }
         },
@@ -99,7 +135,7 @@ export default class Engine {
             if (this.worlddata.objects[name]) {
                 console.error("Name '" + name + "' already exists")
             } else {
-                this.worlddata.objects[name] = {x,y,w,h,color}
+                this.worlddata.objects[name] = {type:"rect",x,y,w,h,color}
                 return this.worlddata.objects[name] 
             }
             
@@ -127,16 +163,20 @@ export default class Engine {
 
 }
 
+
+function wrapInRange(value: number,limit: number): number {
+    const rangeLength = limit; // the length of the range, including 0 and 22
+    const wrappedValue = ((value % rangeLength) + rangeLength) % rangeLength; // wrap the value within the range
+    return wrappedValue;
+  }
  
 
 
 
 
 
-
-
 const collisionhandler = {
-    simplerect: (object1:RenderObjectRect,object2:RenderObjectRect):boolean => {
+    simplerect: (object1:RenderObject,object2:RenderObject):boolean => {
         if ((object1.x + object1.w) > object2.x && object1.x < (object2.x + object2.w)) {
 
             if ((object1.y + object1.h) > object2.y && object1.y < (object2.y + object2.h)) return true
@@ -145,7 +185,7 @@ const collisionhandler = {
         return false
     },
 
-    advancedrect: (object1:RenderObjectRect,object2:RenderObjectRect):{side: string,depth:number} => {
+    advancedrect: (object1:RenderObject,object2:RenderObject):{side: string,depth:number} => {
         // left/right detection
         if ((object1.x + object1.w) > object2.x && object1.x < (object2.x + object2.w)) {
             // top/down detection
