@@ -1,6 +1,6 @@
 # TS-Game
 
-**Noice:** Game is now in new repository [`mobilex1122/TS-Game-Vite`](https://github.com/mobilex1122/TS-Game-Vite)
+**Notice:** Game is now in new repository [`mobilex1122/TS-Game-Vite`](https://github.com/mobilex1122/TS-Game-Vite) running on different framework (vite).
 
 Game made in TS with custom made game engine that's being developed at the same as the game and will be relased as separate game engine in future.
 
